@@ -5,10 +5,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>個人資產與財務決策系統 | Personal Finance OS</title>
   
-  <!-- Environment Config (Optional .env / env.js) -->
-  <!-- Environment Config (Optional config/env.js or env.js) -->
+  <!-- Environment & Local Data Config (Optional config/env.js, env.js, or data/finance_data.js) -->
   <script src="config/env.js"></script>
   <script src="env.js"></script>
+  <script src="data/finance_data.js"></script>
 
   <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -227,7 +227,7 @@
         <div class="card-panel p-4 space-y-2">
           <div class="flex items-center justify-between text-xs text-slate-400 font-medium">
             <span>可靈活調度閒置資金</span>
-            <span class="text-[11px] text-cyan-400 bg-cyan-500/10 px-1.5 py-0.5 rounded">已扣24M生活金</span>
+            <span class="text-[11px] text-cyan-400 bg-cyan-500/10 px-1.5 py-0.5 rounded" id="kpi-reserve-label">已扣生活金</span>
           </div>
           <div class="text-2xl font-extrabold text-cyan-400 tracking-tight font-mono" id="kpi-deployable-cash">NT$ --</div>
           <div class="text-[11px] text-slate-400 pt-1 border-t border-dark-700/60 space-y-0.5">
@@ -237,7 +237,7 @@
             </div>
             <div class="text-[10px] text-slate-500 flex items-center justify-between pt-0.5">
               <span>總現金: <span class="font-mono text-slate-300" id="kpi-total-cash">--</span></span>
-              <span>緊急金 NT$2.4M</span>
+              <span id="kpi-emergency-label">緊急金</span>
             </div>
           </div>
         </div>
@@ -428,12 +428,12 @@
       <!-- Top Stocks KPI Summary & Sync Action -->
       <div class="grid grid-cols-1 sm:grid-cols-4 gap-4">
         <div class="card-panel p-4 space-y-1">
-          <span class="text-xs text-slate-400 font-medium">台股總市值 (玉山證券)</span>
+          <span class="text-xs text-slate-400 font-medium" id="stocks-kpi-tw-label">台股總市值</span>
           <div class="text-xl font-bold font-mono text-emerald-400" id="stocks-kpi-tw-total">NT$ --</div>
           <div class="text-xs text-slate-400"><span id="tw-stocks-count-label">4</span> 檔個股 • 未實現: <span id="stocks-kpi-tw-pl" class="font-mono">--</span></div>
         </div>
         <div class="card-panel p-4 space-y-1">
-          <span class="text-xs text-slate-400 font-medium">美股總市值 (Firstrade+RH+WF)</span>
+          <span class="text-xs text-slate-400 font-medium" id="stocks-kpi-us-label">美股總市值</span>
           <div class="text-xl font-bold font-mono text-cyan-400" id="stocks-kpi-us-total">$ -- USD</div>
           <div class="text-xs text-slate-400">約折合 <span id="stocks-kpi-us-twd" class="font-mono text-slate-200">--</span></div>
         </div>
@@ -454,8 +454,8 @@
       <div class="card-panel overflow-hidden">
         <div class="p-3.5 border-b border-dark-700 bg-dark-750 flex items-center justify-between">
           <div class="flex items-center space-x-2">
-            <h2 class="text-xs font-bold text-slate-200 uppercase tracking-wider">🇹🇼 台灣股票部位 (玉山證券)</h2>
-            <span class="text-[11px] text-slate-400">修改或新增後自動連動玉山證券帳戶餘額</span>
+            <h2 class="text-xs font-bold text-slate-200 uppercase tracking-wider" id="tw-stocks-table-label">🇹🇼 台灣股票部位</h2>
+            <span class="text-[11px] text-slate-400" id="tw-stocks-sync-note">修改或新增後自動連動帳戶餘額</span>
           </div>
           <button onclick="window.openStockModal('TW', 'add')" class="bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold px-3 py-1.5 rounded-lg flex items-center space-x-1 cursor-pointer transition">
             <span>➕</span> <span>新增台股標的</span>
@@ -526,11 +526,11 @@
       
       <div class="card-panel p-4 flex flex-wrap items-center justify-between gap-4">
         <div>
-          <h2 class="text-sm font-bold text-slate-200">🛡️ 保險與美元儲蓄險清單 (共 6 筆真實保單)</h2>
+          <h2 class="text-sm font-bold text-slate-200" id="insurance-header-label">🛡️ 保險與美元儲蓄險清單</h2>
           <p class="text-xs text-slate-400">儲蓄險與年金險保單管理（可自由新增保單名稱、保單幣別與現金價值）</p>
         </div>
         <div class="bg-dark-750 border border-dark-700 px-3 py-1.5 rounded-lg text-xs font-mono">
-          美元儲蓄險總現值：<span class="text-purple-400 font-bold text-sm" id="insurance-usd-total-sum">$131,704 USD</span>
+          美元儲蓄險總現值：<span class="text-purple-400 font-bold text-sm" id="insurance-usd-total-sum">$ -- USD</span>
         </div>
       </div>
 
@@ -671,7 +671,7 @@
             <div class="flex items-center space-x-2">
               <span class="text-rose-400 font-bold font-mono">Mode E (Event)</span>
             </div>
-            <p class="text-xs text-slate-300"><strong>重大事件</strong>：拿到綠卡、轉換教職、稅籍變更或回台時，才做整體的重大調整。</p>
+            <p class="text-xs text-slate-300"><strong>重大事件</strong>：重大人生或稅務變更（如移民身分、稅籍轉換、資產結構大幅調整等）時，才做整體的重大調整。</p>
           </div>
         </div>
       </div>
@@ -697,6 +697,9 @@
           <input type="file" id="input-json-file-picker" accept=".json" class="hidden" onchange="window.handleJSONFileUpload(event)">
           <button onclick="document.getElementById('input-json-file-picker').click()" class="bg-emerald-700/80 hover:bg-emerald-600 text-xs text-white px-3.5 py-2 rounded-lg border border-emerald-500/50 transition flex items-center space-x-1.5 cursor-pointer font-semibold shadow">
             <span>📂</span> <span>匯入本地 JSON 數據 (finance_data.json)</span>
+          </button>
+          <button onclick="window.loadMyFinanceData(true)" class="bg-cyan-700/80 hover:bg-cyan-600 text-xs text-white px-3.5 py-2 rounded-lg border border-cyan-500/50 transition flex items-center space-x-1.5 cursor-pointer font-semibold shadow">
+            <span>⚡</span> <span>載入 data/finance_data.json</span>
           </button>
           <button onclick="window.generateBackupDownload()" class="bg-dark-700 hover:bg-dark-600 text-xs text-slate-200 px-3.5 py-2 rounded-lg border border-dark-600 transition flex items-center space-x-1.5 cursor-pointer">
             <span>📦</span> <span>下載 JSON 時間戳備份</span>
@@ -828,7 +831,7 @@
           </button>
           <span class="text-slate-400 text-[11px]">依銀行歸戶 • 支援 <kbd class="bg-dark-900 px-1 py-0.5 rounded border border-dark-700">Tab</kbd> / <kbd class="bg-dark-900 px-1 py-0.5 rounded border border-dark-700">Enter</kbd> 連續輸入</span>
         </div>
-        <span class="text-[11px] text-slate-400">共 26 個帳戶</span>
+        <span class="text-[11px] text-slate-400" id="modal-account-count">共 -- 個帳戶</span>
       </div>
 
       <!-- Modal Scrollable Table Grid Body -->
@@ -868,10 +871,7 @@
         <div id="stock-input-account-group">
           <label class="block text-slate-400 mb-1">所屬券商帳戶</label>
           <select id="stock-input-account" class="table-input w-full rounded px-2.5 py-1.5 font-mono">
-            <option value="玉山證券">玉山證券 (台股)</option>
-            <option value="Firstrade">Firstrade (美股)</option>
-            <option value="Interactive Brokers">Interactive Brokers (美股)</option>
-            <option value="Charles Schwab">Charles Schwab (美股)</option>
+            <!-- Dynamically populated from accounts_meta -->
           </select>
         </div>
 
@@ -1241,11 +1241,60 @@
     }
 
     // Global App State
-    window.state = restoredState || initialEmbeddedState;
+    // Priority: window.myFinanceData (user's local JS file) > LocalStorage cache > embedded demo
+    // If myFinanceData exists, use LocalStorage only if it was saved from the same data source
+    if (window.myFinanceData) {
+      const cachedSource = restoredState && restoredState.meta && restoredState.meta.migrated_from;
+      const mySource = window.myFinanceData.meta && window.myFinanceData.meta.migrated_from;
+      if (restoredState && cachedSource === mySource) {
+        // LocalStorage was saved from the same personal data — use it (may have user edits)
+        window.state = restoredState;
+      } else {
+        // LocalStorage is stale (from demo or different source) — use fresh personal data
+        window.state = window.myFinanceData;
+      }
+    } else {
+      window.state = restoredState || initialEmbeddedState;
+    }
     window.activeSnapshotIndex = (window.state.snapshots && window.state.snapshots.length > 0) 
       ? window.state.snapshots.length - 1 
       : 0;
     window.charts = {};
+
+    window.loadMyFinanceData = function (force) {
+      if (window.myFinanceData) {
+        window.state = window.myFinanceData;
+        window.activeSnapshotIndex = (window.state.snapshots.length > 0) ? window.state.snapshots.length - 1 : 0;
+        window.persistStateLocally();
+        window.renderAll();
+        if (typeof showToast === 'function') {
+          showToast('⚡ 已重新載入 data/finance_data.js 最新數據！', 'success');
+        }
+        return;
+      }
+      // Fallback: try fetch for HTTP server mode
+      fetch('./data/finance_data.json')
+        .then(res => {
+          if (!res.ok) throw new Error('File not found');
+          return res.json();
+        })
+        .then(data => {
+          if (data && data.snapshots) {
+            window.state = data;
+            window.activeSnapshotIndex = (data.snapshots.length > 0) ? data.snapshots.length - 1 : 0;
+            window.persistStateLocally();
+            window.renderAll();
+            if (typeof showToast === 'function') {
+              showToast('⚡ 成功載入 data/finance_data.json 最新數據！', 'success');
+            }
+          }
+        })
+        .catch(err => {
+          if (force && typeof showToast === 'function') {
+            showToast('⚠️ 無法自動讀取 data/finance_data.json，請使用「📂 匯入」按鈕點選檔案', 'error');
+          }
+        });
+    };
 
     // 1. Dynamic Functional Asset Categories & Institutions Generator
     window.getFunctionalCategories = function () {
@@ -1254,6 +1303,8 @@
       const usdCashKeys = meta.filter(a => a.currency === 'USD' && a.category === 'cash').map(a => a.key);
       const investKeys = meta.filter(a => a.category === 'tw_stock' || a.category === 'us_stock').map(a => a.key);
       const insKeys = meta.filter(a => a.category === 'insurance').map(a => a.key);
+      const reKeys = meta.filter(a => a.category === 'real_estate').map(a => a.key);
+      const loanKeys = meta.filter(a => a.category === 'liability' || a.category === 'loan').map(a => a.key);
 
       const isTimeDeposit = (k) => {
         const a = meta.find(x => x.key === k);
@@ -1265,7 +1316,7 @@
       const usdDemand = usdCashKeys.filter(k => !isTimeDeposit(k));
       const usdTime = usdCashKeys.filter(k => isTimeDeposit(k));
 
-      return [
+      const categories = [
         {
           id: 'twd_cash',
           title: '🇹🇼 台幣現金與定存帳戶',
@@ -1311,6 +1362,32 @@
           keys: insKeys
         }
       ];
+
+      if (reKeys.length > 0) {
+        categories.push({
+          id: 'real_estate',
+          title: '🏠 不動產與實體資產',
+          subtitle: '房產估值與固定資產',
+          icon: '🏠',
+          color: 'text-amber-400',
+          bgColor: 'border-amber-500/30 bg-amber-950/10',
+          keys: reKeys
+        });
+      }
+
+      if (loanKeys.length > 0) {
+        categories.push({
+          id: 'liabilities',
+          title: '💳 負債與房屋貸款',
+          subtitle: '長期貸款與應負債務',
+          icon: '💳',
+          color: 'text-rose-400',
+          bgColor: 'border-rose-500/30 bg-rose-950/10',
+          keys: loanKeys
+        });
+      }
+
+      return categories;
     };
 
     window.getBankInstitutions = function () {
@@ -1555,8 +1632,13 @@
       const demandRatio = totalCashTWD > 0 ? ((totalDemandTWD / totalCashTWD) * 100).toFixed(1) : '0.0';
       const timeRatio = totalCashTWD > 0 ? ((totalTimeTWD / totalCashTWD) * 100).toFixed(1) : '0.0';
 
-      const emergencyReserve = 2400000;
+      const df = window.state.decision_framework || {};
+      const emergencyReserve = (df.monthly_burn_rate_twd || 60000) * (df.emergency_reserve_months || 12);
       const deployableCash = Math.max(0, totalCashTWD - emergencyReserve);
+      const kpiReserveLabel = document.getElementById('kpi-reserve-label');
+      if (kpiReserveLabel) kpiReserveLabel.textContent = `已扣${Math.round(emergencyReserve / 10000)}萬生活金`;
+      const kpiEmergencyLabel = document.getElementById('kpi-emergency-label');
+      if (kpiEmergencyLabel) kpiEmergencyLabel.textContent = `緊急金 NT$${(emergencyReserve / 1000000).toFixed(1)}M`;
 
       if (kpiDeployable) kpiDeployable.textContent = `NT$ ${Math.round(deployableCash).toLocaleString()}`;
       if (kpiTotalCash) kpiTotalCash.textContent = `NT$ ${Math.round(totalCashTWD).toLocaleString()}`;
@@ -1583,8 +1665,10 @@
           else if (acc.category === 'us_stock') usStockUSD += val;
         });
         if (meta.length === 0) {
-          twStockVal = Number(currentSnap.accounts['玉山證券']) || 0;
-          usStockUSD = Number(currentSnap.accounts['Firstrade']) || 0;
+          // Fallback: scan snapshot keys for any stock-like accounts
+          Object.keys(currentSnap.accounts).forEach(k => {
+            if (k.includes('證券')) twStockVal += Number(currentSnap.accounts[k]) || 0;
+          });
         }
       }
       const totalEquityTWD = twStockVal + (usStockUSD * currentRate);
@@ -1687,7 +1771,7 @@
             pillsHTML += `</div>`;
             deltaHighlights.innerHTML = pillsHTML;
           } else {
-            deltaHighlights.innerHTML = `<span class="text-slate-500 text-xs">本期所有 26 個帳戶餘額與上一期完全一致。</span>`;
+            deltaHighlights.innerHTML = `<span class="text-slate-500 text-xs">本期所有 ${(window.state.accounts_meta || []).length} 個帳戶餘額與上一期完全一致。</span>`;
           }
         }
       }
@@ -1900,7 +1984,9 @@
             }
           });
           if ((window.state.accounts_meta || []).length === 0) {
-            sSecTWD = (Number(snap.accounts['玉山證券']) || 0) + ((Number(snap.accounts['Firstrade']) || 0) * sRate);
+            Object.keys(snap.accounts).forEach(k => {
+              if (k.includes('證券')) sSecTWD += Number(snap.accounts[k]) || 0;
+            });
           }
 
           const isActive = idx === window.activeSnapshotIndex;
@@ -2324,7 +2410,8 @@
       const sumCashTWD = cashTwdKeys.reduce((s, k) => s + (Number(curSnap.accounts[k]) || 0), 0);
       const sumCashUSD = cashUsdKeys.reduce((s, k) => s + (Number(curSnap.accounts[k]) || 0), 0);
       const totalCashTWD = sumCashTWD + (sumCashUSD * rate);
-      const emergencyReserve = 2400000;
+      const dfAI = window.state.decision_framework || {};
+      const emergencyReserve = (dfAI.monthly_burn_rate_twd || 60000) * (dfAI.emergency_reserve_months || 12);
       const deployableCash = Math.max(0, totalCashTWD - emergencyReserve);
 
       const twStockKeys = accountsMeta.filter(a => a.category === 'tw_stock').map(a => a.key);
@@ -2808,7 +2895,8 @@
       const noteInput = document.getElementById('stock-input-note');
 
       if (market === 'TW') {
-        title.textContent = action === 'add' ? '➕ 新增台灣股票 (玉山證券)' : '✏️ 編輯台灣股票';
+        const twBrokerName = ((window.state.accounts_meta || []).find(a => a.category === 'tw_stock') || {}).key || '台股';
+        title.textContent = action === 'add' ? `➕ 新增台灣股票 (${twBrokerName})` : '✏️ 編輯台灣股票';
         accGroup.classList.add('hidden');
         nameGroup.classList.remove('hidden');
         costGroup.classList.remove('hidden');
@@ -2837,13 +2925,13 @@
 
         if (action === 'edit' && index >= 0) {
           const st = window.state.us_stocks[index];
-          accSelect.value = st.account || 'Firstrade';
+          accSelect.value = st.broker || st.account || ((window.state.accounts_meta || []).find(a => a.category === 'us_stock') || {}).key || '';
           tickerInput.value = st.ticker || '';
           sharesInput.value = st.shares || '';
           priceInput.value = st.price || '';
           noteInput.value = st.note || '';
         } else {
-          accSelect.value = 'Firstrade';
+          accSelect.value = ((window.state.accounts_meta || []).find(a => a.category === 'us_stock') || {}).key || '';
           tickerInput.value = '';
           sharesInput.value = '';
           priceInput.value = '';
@@ -2951,22 +3039,33 @@
       if (!curSnap) return;
 
       const totalTWMV = (state.tw_stocks || []).reduce((sum, s) => sum + (Number(s.market_value) || ((Number(s.shares)||0)*(Number(s.price)||0))), 0);
-      curSnap.accounts['玉山證券'] = totalTWMV;
+      // Dynamically find TW stock account key from accounts_meta
+      const twStockAccKey = ((state.accounts_meta || []).find(a => a.category === 'tw_stock') || {}).key;
+      if (twStockAccKey && curSnap.accounts[twStockAccKey] !== undefined) {
+        curSnap.accounts[twStockAccKey] = totalTWMV;
+      } else if (twStockAccKey) {
+        curSnap.accounts[twStockAccKey] = totalTWMV;
+      }
 
+      // Dynamically sync US stock values by broker
       const usByBroker = {};
       (state.us_stocks || []).forEach(s => {
-        const broker = s.broker || s.account || 'Firstrade';
+        const broker = s.broker || s.account || '';
         const val = Number(s.market_value) || ((Number(s.shares) || 0) * (Number(s.price) || 0));
-        usByBroker[broker] = (usByBroker[broker] || 0) + val;
+        if (broker) usByBroker[broker] = (usByBroker[broker] || 0) + val;
       });
-
+      const usStockAccKey = ((state.accounts_meta || []).find(a => a.category === 'us_stock') || {}).key;
+      let totalUSMV = 0;
       Object.keys(usByBroker).forEach(broker => {
+        totalUSMV += usByBroker[broker];
         if (curSnap.accounts[broker] !== undefined) {
           curSnap.accounts[broker] = Number(usByBroker[broker].toFixed(2));
-        } else if (curSnap.accounts['Firstrade'] !== undefined) {
-          curSnap.accounts['Firstrade'] = Number(usByBroker[broker].toFixed(2));
         }
       });
+      // If no per-broker key matched, write total to the us_stock account key
+      if (usStockAccKey && !Object.keys(usByBroker).some(b => curSnap.accounts[b] !== undefined)) {
+        curSnap.accounts[usStockAccKey] = Number(totalUSMV.toFixed(2));
+      }
 
       window.renderAll();
       showToast('已成功將台美股持股市值即時同步至當前快照！', 'success');

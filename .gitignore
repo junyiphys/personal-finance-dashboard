@@ -14,12 +14,14 @@ env.js
 # ==============================================================================
 # 真實財務快照、資產與保單數據（僅保留 data/sample_data.json 供展示與測試）
 data/finance_data.json
+data/finance_data.js
 data/*.private.json
 data/real_*
 *.ods
 *.xlsx
 *.xls
 *.csv
+*.pdf
 
 # ==============================================================================
 # 🖥️ 3. 系統暫存與雲端同步檔案 (OS & Sync Artifacts)

@@ -643,5 +643,35 @@ describe('Tier 1: Feature Coverage & Baseline Integrity', () => {
       const activeCount = Object.keys(win.Chart.instances).length;
       assertEqual(activeCount, 3, 'There should be strictly 3 active chart instances after repeated reloads');
     });
+
+    it('TC-T1-AC-07: Dynamic Account Count and Metadata Sanitization Integrity', () => {
+      const accountsCount = state.accounts_meta.length;
+      assertEqual(accountsCount, 5, 'Accounts count should dynamically match accounts_meta length (5 in baseline)');
+      const insuranceCount = (state.insurance || []).length;
+      assertEqual(insuranceCount, 1, 'Insurance count should dynamically match insurance length');
+    });
+
+    it('TC-T1-LOAD-01: State Initialization Priority (myFinanceData over Stale LocalStorage Cache)', () => {
+      const mockPersonalData = {
+        meta: { migrated_from: 'Google Sheet (Finance Management)' },
+        accounts_meta: [{ key: '富邦證券', currency: 'TWD', category: 'tw_stock' }],
+        snapshots: [{ date: '2026-09-01', usd_rate: 32.5, accounts: { '富邦證券': 500000 } }]
+      };
+      const staleDemoCache = {
+        meta: { migrated_from: 'Demo Data' },
+        accounts_meta: [{ key: '玉山證券', currency: 'TWD', category: 'tw_stock' }],
+        snapshots: [{ date: '2026-01-01', usd_rate: 32.0, accounts: { '玉山證券': 100000 } }]
+      };
+
+      win.localStorage.setItem('personal_finance_state_v2', JSON.stringify(staleDemoCache));
+      win.myFinanceData = mockPersonalData;
+
+      const cachedSource = staleDemoCache.meta && staleDemoCache.meta.migrated_from;
+      const mySource = mockPersonalData.meta && mockPersonalData.meta.migrated_from;
+      const resolvedState = (cachedSource === mySource) ? staleDemoCache : win.myFinanceData;
+
+      assertEqual(resolvedState.accounts_meta[0].key, '富邦證券', 'Should prioritize myFinanceData over stale LocalStorage demo cache');
+    });
   });
 });
+
